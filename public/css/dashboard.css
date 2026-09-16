@@ -1,0 +1,69 @@
+/* ==========================================
+   Cashly - Override Estilos Vista Principal
+   ========================================== */
+
+/* 1. Barra Lateral (Sidebar) completa */
+.sidebar, 
+aside, 
+.flex-column,
+div[class*="sidebar"] {
+  background-color: #0B1D3A !important; /* Azul Noche Oscuro */
+}
+
+/* Enlaces y Texto del Menú Lateral */
+.sidebar a, 
+.sidebar .nav-link, 
+aside a,
+aside span {
+  color: #FFFFFF !important;
+}
+
+/* Opción Activa (Panel Principal) */
+.sidebar .nav-link.active,
+.sidebar a.active,
+aside .active {
+  background-color: #5C82B6 !important; /* Azul Medio Activo */
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+}
+
+/* Texto o Ícono de Cerrar Sesión */
+.sidebar a[href*="logout"],
+.sidebar .text-danger,
+.sidebar button.text-danger {
+  color: #E63946 !important; /* Rojo Carmín */
+}
+
+
+/* 2. Fondo de la Aplicación */
+body, 
+main, 
+.content-wrapper {
+  background-color: #F4F6F9 !important; /* Gris Azulado Claro */
+}
+
+
+/* 3. Botón Principal (Guardar Movimiento) */
+.btn-primary, 
+button[type="submit"],
+.btn-info {
+  background-color: #5C82B6 !important; /* Azul Accent */
+  border-color: #5C82B6 !important;
+  color: #FFFFFF !important;
+}
+
+.btn-primary:hover, 
+button[type="submit"]:hover {
+  background-color: #3A537D !important; /* Azul Acero */
+  border-color: #3A537D !important;
+}
+
+
+/* 4. Tarjetas / Contenedores Blancos */
+.card, 
+.shadow-sm,
+.bg-white {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+}

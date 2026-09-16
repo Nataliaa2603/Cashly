@@ -1,0 +1,110 @@
+/* ==========================================
+   Cashly - Estilos Principales (Paleta Azul Montaña)
+   ========================================== */
+
+/* Fondo general de la aplicación */
+body {
+  background-color: #F4F6F9;
+  color: #0B1D3A;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- BARRA LATERAL (SIDEBAR) --- */
+.sidebar {
+  background-color: #0B1D3A; /* Azul noche oscuro */
+  color: #FFFFFF;
+  min-height: 100vh;
+}
+
+/* Logo y enlaces de la navegación */
+.sidebar .logo-text,
+.sidebar a, 
+.sidebar .nav-link {
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+/* Hover en los enlaces de la barra lateral */
+.sidebar a:hover, 
+.sidebar .nav-link:hover {
+  background-color: #3A537D; /* Azul acero */
+  color: #FFFFFF;
+}
+
+/* Opción activa / seleccionada */
+.sidebar .active,
+.sidebar .nav-link.active {
+  background-color: #5C82B6 !important; /* Azul medio activo */
+  color: #FFFFFF !important;
+  border-radius: 8px;
+}
+
+/* Enlace de Cerrar Sesión */
+.sidebar .logout-link,
+.text-danger {
+  color: #E63946 !important; /* Rojo sutil para acciones destructivas */
+}
+
+
+/* --- TARJETAS Y CONTENEDORES --- */
+.card, 
+.bg-white,
+.container-box {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(11, 29, 58, 0.04);
+}
+
+
+/* --- BOTONES --- */
+.btn-primary,
+button[type="submit"] {
+  background-color: #5C82B6; /* Azul accent */
+  border: none;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 18px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background-color: #3A537D; /* Azul acero al pasar el cursor */
+  cursor: pointer;
+}
+
+
+/* --- TARJETAS DE BALANCES Y RESUMEN --- */
+/* Ingresos */
+.income-amount,
+.text-success {
+  color: #2A9D8F !important; /* Verde esmeralda sutil */
+}
+
+/* Gastos */
+.expense-amount {
+  color: #E63946 !important; /* Rojo carmín */
+}
+
+/* Balance Neto */
+.balance-amount {
+  color: #0B1D3A !important; /* Azul oscuro principal */
+}
+
+
+/* --- TABLAS --- */
+table th {
+  background-color: #F1F5F9;
+  color: #0B1D3A;
+  font-weight: 600;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+table td {
+  border-bottom: 1px solid #E2E8F0;
+  color: #5C6B73;
+}
