@@ -1,12 +1,5 @@
 <?php
-
-
-// ghjhgjg
-// jkhjjkhjkh
-// kjhkjh
-// kjhjkh
-
-
+// Activar reporte de errores para ver el fallo exacto
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -14,63 +7,84 @@ error_reporting(E_ALL);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Recuperar una sesión si el usuario activó “Recordarme”.
-if (!isset($_SESSION['usuario_id']) && !empty($_COOKIE['cashly_remember'])) {
-    require_once __DIR__ . '/../app/controllers/AuthController.php';
-    (new AuthController())->intentarRecordar();
+// ... resto del código ...
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-$url = $_GET['url'] ?? 'login';
+require_once __DIR__ . '/../app/controllers/AuthController.php';
+require_once __DIR__ . '/../app/controllers/DashboardController.php';
+require_once __DIR__ . '/../app/controllers/ClienteController.php';
+require_once __DIR__ . '/../app/controllers/PresupuestoController.php';
+require_once __DIR__ . '/../app/controllers/MetaController.php';
+require_once __DIR__ . '/../app/controllers/CalendarioController.php';
 
-// Proteger rutas si no ha iniciado sesión
-$rutasPublicas = ['login', 'registro'];
-if (!isset($_SESSION['usuario_id']) && !in_array($url, $rutasPublicas)) {
-    header("Location: index.php?url=login");
-    exit;
-}
+$url = $_GET['url'] ?? 'dashboard';
 
 switch ($url) {
     case 'login':
-        require_once __DIR__ . '/../app/controllers/AuthController.php';
-        $controller = new AuthController();
-        $controller->login();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            (new AuthController())->login();
+        } else {
+            require_once __DIR__ . '/../app/views/auth/login.php';
+        }
         break;
 
     case 'registro':
-        require_once __DIR__ . '/../app/controllers/AuthController.php';
-        $controller = new AuthController();
-        $controller->registro();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            (new AuthController())->registrar();
+        } else {
+            require_once __DIR__ . '/../app/views/auth/registro.php';
+        }
         break;
 
     case 'logout':
-        require_once __DIR__ . '/../app/controllers/AuthController.php';
-        $controller = new AuthController();
-        $controller->logout();
+        (new AuthController())->logout();
         break;
 
     case 'dashboard':
-        require_once __DIR__ . '/../app/controllers/DashboardController.php';
-        $controller = new DashboardController();
-        $controller->index();
+        (new DashboardController())->index();
         break;
 
-    case 'metas':
-        require_once __DIR__ . '/../app/controllers/MetaController.php';
-        $controller = new MetaController();
-        $controller->index();
-        break;
-
-    case 'presupuestos':
-        require_once __DIR__ . '/../app/controllers/PresupuestoController.php';
-        $controller = new PresupuestoController();
-        $controller->index();
+    case 'guardar-movimiento':
+        (new DashboardController())->guardarMovimiento();
         break;
 
     case 'clientes':
-        require_once __DIR__ . '/../app/controllers/ClienteController.php';
-        $controller = new ClienteController();
-        $controller->index();
+        (new ClienteController())->index();
+        break;
+
+    case 'guardar-cliente':
+        (new ClienteController())->guardar();
+        break;
+
+    case 'eliminar-cliente':
+        (new ClienteController())->eliminar();
+        break;
+
+    case 'presupuestos':
+        (new PresupuestoController())->index();
+        break;
+
+    case 'guardar-presupuesto':
+        (new PresupuestoController())->guardar();
+        break;
+
+    case 'metas':
+        (new MetaController())->index();
+        break;
+
+    case 'guardar-meta':
+        (new MetaController())->guardar();
+        break;
+
+    // --- RUTAS DE CALENDARIO Y RECORDATORIOS ---
+    case 'calendario':
+        (new CalendarioController())->index();
+        break;
+
+    case 'guardar-recordatorio':
+        (new CalendarioController())->guardarRecordatorio();
         break;
 
     default:
