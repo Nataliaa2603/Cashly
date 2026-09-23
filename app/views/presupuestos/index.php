@@ -1,6 +1,39 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Cashly - Presupuestos</title><link rel="stylesheet" href="css/cashly-ui.css"></head><body>
-<div class="cashly-app"><aside class="sidebar"><div><div class="brand">Cashly<span class="spark">✦</span></div><nav class="nav"><a href="index.php?url=dashboard"><span class="ico">⌂</span>Inicio</a><a href="index.php?url=clientes"><span class="ico">♣</span>Clientes</a><a class="active" href="index.php?url=presupuestos"><span class="ico">▣</span>Presupuestos</a><a href="index.php?url=metas"><span class="ico">◉</span>Metas de Ahorro</a></nav></div><div class="sidebar-bottom"><div class="pig-wrap"><svg class="pig" viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg"><ellipse cx="88" cy="93" rx="61" ry="38" fill="#79aefb"/><ellipse cx="88" cy="98" rx="49" ry="31" fill="#6fa5f3"/><circle cx="136" cy="79" r="28" fill="#8ab8ff"/><path d="M119 57L120 32L139 47L151 32L155 61" fill="#8ab8ff"/><circle cx="136" cy="76" r="4" fill="#163d80"/><ellipse cx="158" cy="83" rx="15" ry="12" fill="#ff9db0"/><circle cx="153" cy="82" r="3" fill="#b83e57"/><circle cx="162" cy="82" r="3" fill="#b83e57"/><circle cx="58" cy="62" r="8" fill="#ffd05a"/><path d="M53 51L58 31L64 51Z" fill="#ffc43d"/><rect x="48" y="117" width="12" height="20" rx="5" fill="#4e82d8"/><rect x="111" y="116" width="12" height="20" rx="5" fill="#4e82d8"/><path d="M28 101C8 95 9 113 23 115" fill="none" stroke="#79aefb" stroke-width="7" stroke-linecap="round"/></svg></div><div class="tip"><strong>Consejo del día 💙</strong><p>Pequeños cambios,<br>grandes resultados.</p></div><a class="logout" href="index.php?url=logout">↪ <span>Cerrar Sesión</span></a></div></aside>
-<main class="main"><div class="topbar"><div class="title"><h1>Gestión de Presupuestos 🎯</h1><p>Controla tus gastos asignando un límite por categoría</p></div><div class="user-pill"><span class="avatar">N</span> Hola, <strong><?= htmlspecialchars($_SESSION['usuario_nombre'] ?? 'Usuario') ?></strong>⌄</div></div><?php $limite_total=0;$gastado_total=0;foreach(($presupuestos??[]) as $p){$limite_total+=(float)($p['monto_limite']??0);$gastado_total+=(float)($p['monto_gastado']??0);} $disponible_total=max(0,$limite_total-$gastado_total); ?>
-<div class="grid3"><div class="card kpi"><div class="kpi-label">Límite Total Presupuestado</div><div class="kpi-value blue">$<?= number_format($limite_total,0,',','.') ?> COP</div></div><div class="card kpi"><div class="kpi-label">Total Gastado</div><div class="kpi-value pink">$<?= number_format($gastado_total,0,',','.') ?> COP</div></div><div class="card kpi"><div class="kpi-label">Total Disponible</div><div class="kpi-value green">$<?= number_format($disponible_total,0,',','.') ?> COP</div></div></div>
-<section class="section"><div class="section-title-row"><h3 class="section-title">▣ Mis Presupuestos Activos <span class="scribble">↗</span></h3><span class="count-pill"><?= count($presupuestos??[]) ?> activos</span></div><div class="budget-grid"><?php if(!empty($presupuestos)): foreach($presupuestos as $p): $lim=(float)($p['monto_limite']??0);$gas=(float)($p['monto_gastado']??0);$disp=max(0,$lim-$gas);$pct=$lim>0?min(100,round(($gas/$lim)*100)):0;$nombre=$p['nombre']??$p['categoria']??$p['categoria_nombre']??'Sin nombre'; ?><div class="card budget-card"><div class="card-top"><h4>🏷️ <?= htmlspecialchars($nombre) ?></h4><div class="row-actions"><a class="action-edit" href="index.php?url=presupuestos&action=editar&id=<?= (int)$p['id'] ?>">Editar</a><a class="action-delete" href="index.php?url=presupuestos&action=eliminar&id=<?= (int)$p['id'] ?>" onclick="return confirm('¿Deseas eliminar este presupuesto?');">Borrar</a></div></div><div class="sub">Límite: $<?= number_format($lim,0,',','.') ?> COP</div><div class="amount <?= $pct>90?'pink':'blue' ?>">$<?= number_format($gas,0,',','.') ?> COP</div><div class="sub"><strong>Disponible: $<?= number_format($disp,0,',','.') ?> COP</strong></div><div class="progress-label"><span>Uso</span><span><?= $pct ?>%</span></div><div class="progress"><span style="width:<?= $pct ?>%"></span></div></div><?php endforeach; else: ?><div class="card empty" style="grid-column:1/-1">🎯 No tienes presupuestos asignados aún.<br>¡Crea el primero abajo!</div><?php endif; ?></div></section>
-<section class="section grid2 budget-forms"><div class="card panel"><h3 class="section-title"><?= $presupuestoEditar ? '✎ Editar Presupuesto' : '＋ Crear Nuevo Presupuesto' ?></h3><form action="index.php?url=presupuestos" method="POST"><input type="hidden" name="action" value="<?= $presupuestoEditar ? 'actualizar' : 'crear' ?>"><input type="hidden" name="id" value="<?= (int)($presupuestoEditar['id']??0) ?>"><div class="field"><label>Nombre / Concepto</label><input type="text" name="nombre" value="<?= htmlspecialchars($presupuestoEditar['categoria']??$presupuestoEditar['nombre']??'') ?>" placeholder="Ej: Alimentación, Spotify Premium" required></div><div class="grid2" style="gap:10px"><div class="field"><label>Límite Mensual (COP)</label><input type="number" step="0.01" name="monto_limite" value="<?= htmlspecialchars($presupuestoEditar['monto_limite']??'') ?>" placeholder="Ej: 1500000" required></div><div class="field"><label>Gastado Inicial (COP)</label><input type="number" step="0.01" name="monto_gastado" value="<?= htmlspecialchars($presupuestoEditar['monto_gastado']??0) ?>" placeholder="Ej: 0"></div></div><button class="btn btn-blue full" type="submit"><?= $presupuestoEditar ? '✓ Actualizar Presupuesto' : '▣ Crear Presupuesto' ?></button><?php if($presupuestoEditar): ?><a class="btn btn-soft full" href="index.php?url=presupuestos">Cancelar edición</a><?php endif; ?></form></div><div class="card panel"><h3 class="section-title">💸 Registrar Gasto</h3><form action="index.php?url=presupuestos" method="POST"><input type="hidden" name="action" value="gasto"><div class="field"><label>Seleccionar Presupuesto</label><select name="presupuesto_id" required><option value="">-- Selecciona un presupuesto --</option><?php foreach(($presupuestos??[]) as $p): ?><option value="<?= (int)$p['id'] ?>"><?= htmlspecialchars($p['nombre']??$p['categoria']??$p['categoria_nombre']??'Sin nombre') ?></option><?php endforeach; ?></select></div><div class="field"><label>Monto del Gasto (COP)</label><input type="number" step="0.01" name="monto_gasto" placeholder="Ej: 50000" required></div><button class="btn btn-pink full" type="submit">＋ Sumar Gasto</button></form><div class="soft-note">Tip: usa un presupuesto por categoría para ver rápidamente cuánto te queda disponible. 💙</div></div></section></main></div></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashly - Presupuestos</title>
+    <link rel="stylesheet" href="public/css/estilos.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Menú Lateral -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Cashly ✨</h2>
+            </div>
+            <nav class="menu">
+                <a href="index.php?url=dashboard" class="nav-link">
+                    <i>🏠</i> <span>Inicio</span>
+                </a>
+                <a href="index.php?url=presupuestos" class="nav-link active">
+                    <i>📊</i> <span>Presupuestos</span>
+                </a>
+                <a href="index.php?url=metas" class="nav-link">
+                    <i>🎯</i> <span>Metas de Ahorro</span>
+                </a>
+                <a href="index.php?url=calendario" class="nav-link">
+                    <i>📅</i> <span>Calendario</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="content">
+            <h1>Presupuestos</h1>
+            <p>Gestión y seguimiento de tus presupuestos límite.</p>
+        </main>
+    </div>
+</body>
+</html>

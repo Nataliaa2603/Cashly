@@ -1,7 +1,125 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Cashly - Metas de Ahorro</title><link rel="stylesheet" href="css/cashly-ui.css"></head><body>
-<div class="cashly-app"><aside class="sidebar"><div><div class="brand">Cashly<span class="spark">✦</span></div><nav class="nav"><a href="index.php?url=dashboard"><span class="ico">⌂</span>Inicio</a><a href="index.php?url=clientes"><span class="ico">♣</span>Clientes</a><a href="index.php?url=presupuestos"><span class="ico">▣</span>Presupuestos</a><a class="active" href="index.php?url=metas"><span class="ico">◉</span>Metas de Ahorro</a></nav></div><div class="sidebar-bottom"><div class="pig-wrap"><svg class="pig" viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg"><ellipse cx="88" cy="93" rx="61" ry="38" fill="#79aefb"/><ellipse cx="88" cy="98" rx="49" ry="31" fill="#6fa5f3"/><circle cx="136" cy="79" r="28" fill="#8ab8ff"/><path d="M119 57L120 32L139 47L151 32L155 61" fill="#8ab8ff"/><circle cx="136" cy="76" r="4" fill="#163d80"/><ellipse cx="158" cy="83" rx="15" ry="12" fill="#ff9db0"/><circle cx="153" cy="82" r="3" fill="#b83e57"/><circle cx="162" cy="82" r="3" fill="#b83e57"/><circle cx="58" cy="62" r="8" fill="#ffd05a"/><path d="M53 51L58 31L64 51Z" fill="#ffc43d"/><rect x="48" y="117" width="12" height="20" rx="5" fill="#4e82d8"/><rect x="111" y="116" width="12" height="20" rx="5" fill="#4e82d8"/><path d="M28 101C8 95 9 113 23 115" fill="none" stroke="#79aefb" stroke-width="7" stroke-linecap="round"/></svg></div><div class="tip"><strong>Consejo del día 💙</strong><p>Pequeños cambios,<br>grandes resultados.</p></div><a class="logout" href="index.php?url=logout">↪ <span>Cerrar Sesión</span></a></div></aside>
-<main class="main"><div class="topbar"><div class="title"><h1>Metas de Ahorro 📝</h1><p>Planea tus objetivos de inversión a futuro</p></div><div class="user-pill"><span class="avatar">N</span> Hola, <strong><?= htmlspecialchars($_SESSION['usuario_nombre'] ?? 'Usuario') ?></strong>⌄</div></div>
-<div class="grid3"><div class="card kpi"><div class="kpi-label">Ahorrado Total</div><div class="kpi-value green">$<?= number_format($totalAhorrado??0,0,',','.') ?> COP</div></div><div class="card kpi"><div class="kpi-label">Objetivo Global</div><div class="kpi-value blue">$<?= number_format($objetivoGlobal??0,0,',','.') ?> COP</div></div><div class="card kpi"><div class="kpi-label">Progreso General</div><div class="kpi-value blue"><?= number_format($progresoGeneral??0,1) ?>%</div></div></div>
-<section class="section"><div class="section-title-row"><h3 class="section-title">🎯 Tus Objetivos Activos <span class="scribble">↗</span></h3><span class="count-pill"><?= count($metas??[]) ?> metas</span></div><div class="grid2"><?php if(!empty($metas)): foreach($metas as $meta): $actual=(float)($meta['monto_actual']??0);$objetivo=(float)($meta['monto_objetivo']??0);$faltan=max(0,$objetivo-$actual);$pct=$objetivo>0?min(100,round($actual/$objetivo*100)):0;$fecha=$meta['fecha_limite']??null;$fechaFmt=($fecha&&$fecha!=='0000-00-00')?date('d/m/Y',strtotime($fecha)):'Sin fecha'; ?><div class="card goal-card"><div class="card-top"><div><h4>✈️ <?= htmlspecialchars($meta['nombre']??'Meta') ?></h4><div class="sub">Objetivo: $<?= number_format($objetivo,0,',','.') ?> COP</div></div><span class="mini-date"><?= $fechaFmt ?></span></div><div class="amount green">$<?= number_format($actual,0,',','.') ?> COP</div><div class="sub">Faltan: $<?= number_format($faltan,0,',','.') ?> COP</div><div class="progress greenbar"><span style="width:<?= $pct ?>%"></span></div><div class="progress-label"><span>Progreso</span><span><?= $pct ?>%</span></div></div><?php endforeach; else: ?><div class="card empty" style="grid-column:1/-1">No tienes metas creadas todavía. ¡Crea la primera abajo!</div><?php endif; ?></div></section>
-<section class="section grid2"><div class="card panel"><h3 class="section-title">＋ Crear Nueva Meta</h3><form action="index.php?url=metas" method="POST"><input type="hidden" name="action" value="crear_meta"><div class="field"><label>Nombre de la Meta</label><input type="text" name="nombre" placeholder="Ej: Viaje a Japón, Fondo de emergencia" required></div><div class="grid2" style="gap:10px"><div class="field"><label>Monto Objetivo (COP)</label><input type="number" step="any" name="monto_objetivo" placeholder="Ej: 3000000" required></div><div class="field"><label>Monto Inicial (COP)</label><input type="number" step="any" name="monto_inicial" placeholder="Ej: 500000"></div></div><div class="field"><label>Fecha Límite</label><input type="date" name="fecha_limite"></div><button class="btn btn-blue full" type="submit">▣ Crear Meta</button></form></div><div class="card panel"><h3 class="section-title"><?= $movimientoEditar ? '✎ Editar Movimiento' : '💰 Registrar Abono' ?></h3><?php if($movimientoEditar): ?><form action="index.php?url=metas" method="POST"><input type="hidden" name="action" value="actualizar_movimiento"><input type="hidden" name="movimiento_id" value="<?= (int)$movimientoEditar['id'] ?>"><div class="field"><label>Meta</label><select name="meta_id" required><?php foreach(($metas??[]) as $m): ?><option value="<?= (int)$m['id'] ?>" <?= (int)$m['id']===(int)$movimientoEditar['meta_id']?'selected':'' ?>>🎯 <?= htmlspecialchars($m['nombre']) ?></option><?php endforeach; ?></select></div><div class="field"><label>Monto (COP)</label><input type="number" step="any" name="monto" value="<?= htmlspecialchars($movimientoEditar['monto']) ?>" required></div><div class="two-actions"><button class="btn btn-green" type="submit">✓ Actualizar</button><a class="btn btn-soft" href="index.php?url=metas">Cancelar</a></div></form><?php else: ?><form action="index.php?url=metas" method="POST"><input type="hidden" name="action" value="abono"><div class="field"><label>Seleccionar Meta</label><select name="meta_id" required><?php if(!empty($metas)): foreach($metas as $m): ?><option value="<?= (int)$m['id'] ?>">🎯 <?= htmlspecialchars($m['nombre']) ?></option><?php endforeach; else: ?><option value="">No hay metas creadas</option><?php endif; ?></select></div><div class="field"><label>Monto (COP)</label><input type="number" step="any" name="monto" placeholder="Ej: 200000" required></div><button class="btn btn-green full" type="submit">＋ Abonar Dinero</button></form><?php endif; ?></div></section>
-<section class="section card panel"><div class="section-title-row"><h3 class="section-title">📜 Últimos Movimientos <span class="scribble">↗</span></h3><span class="count-pill">CRUD completo</span></div><div class="responsive-table"><table class="list-table"><thead><tr><th>Fecha</th><th>Meta</th><th>Monto</th><th>Acciones</th></tr></thead><tbody><?php if(!empty($movimientos)): foreach($movimientos as $mov): ?><tr><td><?= date('d/m/Y H:i',strtotime($mov['fecha'])) ?></td><td><strong><?= htmlspecialchars($mov['meta_nombre']) ?></strong></td><td class="green" style="font-weight:800">+$<?= number_format($mov['monto'],0,',','.') ?> COP</td><td><div class="row-actions"><a class="action-edit" href="index.php?url=metas&action=editar_movimiento&id=<?= (int)$mov['id'] ?>">Editar</a><a class="action-delete" href="index.php?url=metas&action=eliminar_movimiento&id=<?= (int)$mov['id'] ?>" onclick="return confirm('¿Deseas eliminar este movimiento? El ahorro de la meta se ajustará automáticamente.');">Borrar</a></div></td></tr><?php endforeach; else: ?><tr><td colspan="4" class="empty">Sin abonos registrados aún.</td></tr><?php endif; ?></tbody></table></div><div class="table-footer">Mostrando <?= count($movimientos??[]) ?> movimiento(s)</div></section></main></div></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metas de Ahorro - Cashly</title>
+    <!-- Vinculación correcta del CSS desde public/ -->
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Menú Lateral Azul (Sidebar) -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Cashly ✨</h2>
+            </div>
+            
+            <nav class="menu">
+                <a href="index.php?url=dashboard" class="nav-link">
+                    <i class="fas fa-home"></i> <span>Inicio</span>
+                </a>
+                <a href="index.php?url=presupuestos" class="nav-link">
+                    <i class="fas fa-chart-bar"></i> <span>Presupuestos</span>
+                </a>
+                <a href="index.php?url=metas" class="nav-link active">
+                    <i class="fas fa-bullseye"></i> <span>Metas de Ahorro</span>
+                </a>
+                <a href="index.php?url=calendario" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i> <span>Calendario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="tip-card">
+                    <p>Consejo del día 💙</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de Contenido Principal -->
+        <main class="content">
+            <header class="page-header">
+                <h1>Metas de Ahorro 📝</h1>
+                <p>Planea tus objetivos de inversión a futuro</p>
+            </header>
+
+            <!-- Tarjeta de Resumen de Ahorro -->
+            <div class="cards-grid">
+                <div class="card summary-card">
+                    <h3>Ahorrado Total</h3>
+                    <p class="total-amount">$1.000 COP</p>
+                </div>
+            </div>
+
+            <!-- Sección de Objetivos Activos -->
+            <section class="active-goals">
+                <h2>Tus Objetivos Activos ↗</h2>
+                <div class="goal-item card">
+                    <div class="goal-header">
+                        <h3>✈️ Graduacion</h3>
+                    </div>
+                    <p class="target">Objetivo: $7.000.000 COP</p>
+                    <p class="current-amount">$1.000 COP</p>
+                    <p class="remaining">Faltan: $6.999.000 COP</p>
+                    <div class="progress-container">
+                        <label>Progreso</label>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 1%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Formulario para Crear Nuevas Metas -->
+            <section class="form-section card">
+                <h2>+ Crear Nueva Meta</h2>
+                <form action="index.php?url=metas/crear" method="POST">
+                    <div class="form-group">
+                        <label for="nombre">Nombre de la Meta</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej: Viaje a Japón, Fondo de emergencia" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="monto_objetivo">Monto Objetivo (COP)</label>
+                            <input type="number" id="monto_objetivo" name="monto_objetivo" placeholder="Ej: 3000000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="monto_inicial">Monto Inicial (COP)</label>
+                            <input type="number" id="monto_inicial" name="monto_inicial" placeholder="Ej: 500000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha_limite">Fecha Límite</label>
+                        <input type="date" id="fecha_limite" name="fecha_limite" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">💾 Crear Meta</button>
+                </form>
+            </section>
+
+            <!-- Historial de Movimientos -->
+            <section class="movements-section card">
+                <h2>📜 Últimos Movimientos ↗</h2>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Meta</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Se renderizan dinámicamente con PHP -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
